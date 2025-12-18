@@ -1,8 +1,11 @@
 import React from 'react';
 
-const MovieCard = ({ movie, isFavorite, toggleFavorite }) => {
+const MovieCard = ({ movie, isFavorite, toggleFavorite, onMovieSelect }) => {
     return (
-        <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl relative group">
+        <div
+            className="bg-gray-800 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl relative group cursor-pointer"
+            onClick={() => onMovieSelect(movie.imdbID)}
+        >
             <div className="relative aspect-[2/3] overflow-hidden">
                 {movie.Poster !== "N/A" ? (
                     <img className="w-full h-full object-cover" src={movie.Poster} alt={movie.Title} />
@@ -13,7 +16,10 @@ const MovieCard = ({ movie, isFavorite, toggleFavorite }) => {
                 )}
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
                     <button
-                        onClick={() => toggleFavorite(movie)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(movie);
+                        }}
                         className={`p-3 rounded-full ${isFavorite ? 'bg-red-600 text-white' : 'bg-white text-black hover:bg-red-600 hover:text-white'} transition-colors duration-300`}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill={isFavorite ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">

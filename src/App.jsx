@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SearchBar from './components/SearchBar';
 import MovieList from './components/MovieList';
+import MovieDetails from './components/MovieDetails';
 
 const API_KEY = '50837e04';
 
@@ -9,6 +10,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [favorites, setFavorites] = useState(() => {
     const savedFavorites = localStorage.getItem('react-movie-app-favorites');
     return savedFavorites ? JSON.parse(savedFavorites) : [];
@@ -64,8 +66,16 @@ function App() {
     });
   };
 
+  const handleMovieSelect = (imdbID) => {
+    setSelectedMovieId(imdbID);
+  };
+
+  const handleCloseMovie = () => {
+    setSelectedMovieId(null);
+  };
+
   return (
-    <div className="min-h-screen bg-[#141414] text-white font-sans">
+    <div className="min-h-screen bg-[#141414] text-white font-sans relative">
       <div className="container mx-auto px-4 py-8">
         <header className="mb-8 text-center">
           <h1 className="text-5xl font-extrabold text-red-600 mb-2 tracking-wide uppercase">Popcorn</h1>
@@ -95,17 +105,31 @@ function App() {
           {!loading && !error && movies.length === 0 && !searchTerm && favorites.length > 0 && (
             <div className="mb-12">
               <h2 className="text-2xl font-bold mb-6 text-white border-l-4 border-red-600 pl-4">Your Nominations</h2>
-              <MovieList movies={favorites} favorites={favorites} toggleFavorite={toggleFavorite} />
+              <MovieList
+                movies={favorites}
+                favorites={favorites}
+                toggleFavorite={toggleFavorite}
+                onMovieSelect={handleMovieSelect}
+              />
             </div>
           )}
 
           {!loading && !error && movies.length > 0 && (
             <div>
-              <MovieList movies={movies} favorites={favorites} toggleFavorite={toggleFavorite} />
+              <MovieList
+                movies={movies}
+                favorites={favorites}
+                toggleFavorite={toggleFavorite}
+                onMovieSelect={handleMovieSelect}
+              />
             </div>
           )}
         </div>
       </div>
+
+      {selectedMovieId && (
+        <MovieDetails imdbID={selectedMovieId} onClose={handleCloseMovie} />
+      )}
     </div>
   );
 }
